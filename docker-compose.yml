@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   nodered:
@@ -8,7 +8,7 @@ services:
       - "1880:1880"
     volumes:
       - ./nodered_data:/data
-      - ./nodered_data/settings.js:/data/settings.js
+  #    - ./nodered_data/settings.js:/data/settings.js
     restart: unless-stopped
     networks:
       - iot_net
@@ -24,10 +24,10 @@ services:
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
-      - DOCKER_INFLUXDB_INIT_ORG=my-org
-      - DOCKER_INFLUXDB_INIT_BUCKET=my-bucket
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-token
+      - DOCKER_INFLUXDB_INIT_PASSWORD=telecom-2025*
+      - DOCKER_INFLUXDB_INIT_ORG=tce-iot-server
+      - DOCKER_INFLUXDB_INIT_BUCKET=telecom-sensor-DB
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=tce-admin-2025
     restart: unless-stopped
     networks:
       - iot_net
@@ -42,6 +42,9 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
     volumes:
       - ./grafana_data:/var/lib/grafana
+
+      # Try to permission acces with command "sudo chown -R 472:472 ./grafana_data"
+
     depends_on:
       - influxdb
     restart: unless-stopped
