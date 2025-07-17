@@ -1,0 +1,47 @@
+# version: '3.8'
+
+services:
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./nodered_data:/data
+      - ./nodered_data/settings.js:/data/settings.js
+    restart: unless-stopped
+    networks:
+      - iot_net
+
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"  
+    volumes:
+      - ./influxdb_data:/var/lib/influxdb
+      - ./influxdb_config:/etc/influxdb
+    restart: unless-stopped
+    networks:
+      - iot_net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+    depends_on:
+      - influxdb
+    restart: unless-stopped
+    networks:
+      - iot_net
+
+networks:
+  iot_net:
+    driver: bridge
